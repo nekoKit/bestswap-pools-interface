@@ -3,71 +3,55 @@ import { provider } from 'web3-core'
 
 import BigNumber from 'bignumber.js'
 import { useWallet } from 'use-wallet'
-// import { Contract } from 'web3-eth-contract'
-
-import {
-  getMasterChefContract,
-  // getWethContract,
-  getFarms,
-  // getTotalLPWethValue,
-} from '../sushi/utils'
-import useSushi from './useSushi'
 import useBlock from './useBlock'
+import useFarms from './useFarms'
+import { getContract, getTotalLPWbnbValue } from '../utils/pool'
+import { getContract as getERC20Contract } from '../utils/erc20'
+import { Farm } from '../contexts/Farms/types'
+import useBest from './useBest'
+import useWBNB from './useWBNB'
 
 export interface StakedValue {
   tokenAmount: BigNumber
   wethAmount: BigNumber
   totalWethValue: BigNumber
   tokenPriceInWeth: BigNumber
-  poolWeight: BigNumber
+  allocPoint: BigNumber
 }
 
 const useAllStakedValue = () => {
   const [balances, setBalance] = useState([] as Array<StakedValue>)
-  const { account }: { account: string; ethereum: provider } = useWallet()
-  const sushi = useSushi()
-  const farms = getFarms(sushi)
-  const masterChefContract = getMasterChefContract(sushi)
+  const { account, ethereum }: { account: string; ethereum: provider } = useWallet()
+  const farms = useFarms()
   // const wethContact = getWethContract(sushi)
   const block = useBlock()
+  const { address: bestAddress } = useBest()
+  const { address: wbnbAddress } = useWBNB()
 
   const fetchAllStakedValue = useCallback(async () => {
-    // const balances: Array<StakedValue> = await Promise.all(
-    //   farms.map(
-    //     ({
-    //       pid,
-    //       lpContract,
-    //       tokenContract,
-    //     }: {
-    //       pid: number
-    //       lpContract: Contract
-    //       tokenContract: Contract
-    //     }) =>
-    //       getTotalLPWethValue(
-    //         masterChefContract,
-    //         wethContact,
-    //         lpContract,
-    //         tokenContract,
-    //         pid,
-    //       ),
-    //   ),
-    // )
-    const balances: Array<StakedValue> = farms.map(() => ({
-      tokenAmount: new BigNumber(0),
-      wethAmount: new BigNumber(0),
-      totalWethValue: new BigNumber(0),
-      tokenPriceInWeth: new BigNumber(0),
-      poolWeight: new BigNumber(0),
-    }))
+    // let totalAllocPoint = new BigNumber(0)
+    const balances: Array<StakedValue> = await Promise.all(
+      farms.map((farm: Farm[], i: number) => {
+        const { poolAddress, stakingTokenAddress, pid } = farm[i]
+        const poolContract = getContract(ethereum, poolAddress) // masterChefContract
+        const wbnbContract = getERC20Contract(ethereum, wbnbAddress) // wethContract
+        const stakingContract = getERC20Contract(ethereum, stakingTokenAddress) // lpContract
+        const bestContract = getERC20Contract(ethereum, bestAddress) // tokenContract
+
+        return getTotalLPWbnbValue(poolContract, wbnbContract, stakingContract, bestContract, pid)
+        // totalAllocPoint = new BigNumber(totalAllocPoint).plus(new BigNumber(allocPoint))
+        // const poolWeight = new BigNumber(allocPoint).div(new BigNumber(totalAllocPoint))
+      }),
+    )
 
     setBalance(balances)
-  }, [farms])
+  }, [bestAddress, ethereum, farms, wbnbAddress])
 
   useEffect(() => {
-    if (account && masterChefContract && sushi) {
+    if (account) {
       fetchAllStakedValue()
     }
-  }, [account, block, fetchAllStakedValue, masterChefContract, setBalance, sushi])
+  }, [account, block, fetchAllStakedValue, setBalance])
 
   return balances
 }

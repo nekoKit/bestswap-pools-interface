@@ -25,6 +25,19 @@ const FarmCards: React.FC = () => {
   const [farms] = useFarms()
   // const { account } = useWallet()
   const stakedValue = useAllStakedValue()
+  console.log('FarmCards::useAllStakedValue stakedValue:', stakedValue)
+  let totalAllocPoint = new BigNumber(0)
+  stakedValue.forEach(staked => {
+    totalAllocPoint = new BigNumber(totalAllocPoint).plus(new BigNumber(staked.allocPoint))
+  })
+
+  const newStakedValue = stakedValue.map(item => {
+    const poolWeight = new BigNumber(item.allocPoint).div(new BigNumber(totalAllocPoint))
+    return {
+      poolWeight,
+      ...item,
+    }
+  })
 
   const sushiIndex = farms.findIndex(
     ({ tokenSymbol }) => tokenSymbol === 'SUSHI',
@@ -40,15 +53,16 @@ const FarmCards: React.FC = () => {
 
   const rows = farms.reduce<FarmWithStakedValue[][]>(
     (farmRows, farm, i) => {
+      console.log('FarmCards::farms:reduse stakedValue[i]:', stakedValue[i], 'sushiPrice:', sushiPrice)
       const farmWithStakedValue = {
         ...farm,
-        ...stakedValue[i],
-        apy: stakedValue[i]
+        ...newStakedValue[i],
+        apy: newStakedValue[i]
           ? sushiPrice
               .times(SUSHI_PER_BLOCK)
               .times(BLOCKS_PER_YEAR)
-              .times(stakedValue[i].poolWeight)
-              .div(stakedValue[i].totalWethValue)
+              .times(newStakedValue[i].poolWeight)
+              .div(newStakedValue[i].totalWethValue)
           : null,
       }
       const newFarmRows = [...farmRows]
@@ -163,7 +177,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm }) => {
               </StyledDetail>
               <StyledDetail>
                 <StyledDetailSpan>APY</StyledDetailSpan>
-                <StyledDetailSpan>500.38%</StyledDetailSpan>
+                <StyledDetailSpan>{farm.apy || 'Na'}%</StyledDetailSpan>
               </StyledDetail>
             </StyledDetails>
             <Spacer />
