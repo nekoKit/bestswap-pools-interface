@@ -177,7 +177,14 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm }) => {
               </StyledDetail>
               <StyledDetail>
                 <StyledDetailSpan>APY</StyledDetailSpan>
-                <StyledDetailSpan>{farm.apy || 'Na'}%</StyledDetailSpan>
+                <StyledDetailSpan>{
+                  farm.apy ? `${farm.apy
+                    .times(new BigNumber(100))
+                    .times(new BigNumber(3))
+                    .toNumber()
+                    .toLocaleString('en-US')
+                    .slice(0, -1)}%`
+                    : 'Loading...'}</StyledDetailSpan>
               </StyledDetail>
             </StyledDetails>
             <Spacer />
