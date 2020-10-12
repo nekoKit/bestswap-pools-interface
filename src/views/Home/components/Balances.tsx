@@ -7,8 +7,8 @@ import Label from '../../../components/Label'
 import Spacer from '../../../components/Spacer'
 import SushiIcon from '../../../components/SushiIcon'
 import useAllEarnings from '../../../hooks/useAllEarnings'
-import useAllStakedValue from '../../../hooks/useAllStakedValue'
-import useFarms from '../../../hooks/useFarms'
+// import useAllStakedValue from '../../../hooks/useAllStakedValue'
+// import useFarms from '../../../hooks/useFarms'
 import useTokenBalance from '../../../hooks/useTokenBalance'
 // import useSushi from '../../../hooks/useSushi'
 // import { getSushiAddress, getSushiSupply } from '../../../sushi/utils'
@@ -32,16 +32,16 @@ const PendingRewards: React.FC = () => {
       .toNumber()
   }
 
-  const [farms] = useFarms()
-  const allStakedValue = useAllStakedValue()
+  // const [farms] = useFarms()
+  // const allStakedValue = useAllStakedValue()
 
-  if (allStakedValue && allStakedValue.length) {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const sumWeth = farms.reduce(
-      (c, { id }, i) => c + (allStakedValue[i].totalWethValue.toNumber() || 0),
-      0,
-    )
-  }
+  // if (allStakedValue && allStakedValue.length) {
+  //   // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  //   const sumWeth = farms.reduce(
+  //     (c, { id }, i) => c + (allStakedValue[i].totalWethValue.toNumber() || 0),
+  //     0,
+  //   )
+  // }
 
   useEffect(() => {
     setStart(end)
