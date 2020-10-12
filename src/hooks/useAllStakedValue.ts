@@ -22,27 +22,26 @@ export interface StakedValue {
 const useAllStakedValue = () => {
   const [balances, setBalance] = useState([] as Array<StakedValue>)
   const { account, ethereum }: { account: string; ethereum: provider } = useWallet()
-  const farms = useFarms()
+  const [ farms ] = useFarms()
   // const wethContact = getWethContract(sushi)
   const block = useBlock()
   const { address: bestAddress } = useBest()
   const { address: wbnbAddress } = useWBNB()
 
   const fetchAllStakedValue = useCallback(async () => {
-    // let totalAllocPoint = new BigNumber(0)
-    const balances: Array<StakedValue> = await Promise.all(
-      farms.map((farm: Farm[], i: number) => {
-        const { poolAddress, stakingTokenAddress, pid } = farm[i]
-        const poolContract = getContract(ethereum, poolAddress) // masterChefContract
-        const wbnbContract = getERC20Contract(ethereum, wbnbAddress) // wethContract
-        const stakingContract = getERC20Contract(ethereum, stakingTokenAddress) // lpContract
-        const bestContract = getERC20Contract(ethereum, bestAddress) // tokenContract
+    const _farms = farms.map((farm: Farm) => {
+      const { poolAddress, stakingTokenAddress, pid } = farm
+      const poolContract = getContract(ethereum, poolAddress) // masterChefContract
+      const wbnbContract = getERC20Contract(ethereum, wbnbAddress) // wethContract
+      const stakingContract = getERC20Contract(ethereum, stakingTokenAddress) // lpContract
+      const bestContract = getERC20Contract(ethereum, bestAddress) // tokenContract
 
-        return getTotalLPWbnbValue(poolContract, wbnbContract, stakingContract, bestContract, pid)
-        // totalAllocPoint = new BigNumber(totalAllocPoint).plus(new BigNumber(allocPoint))
-        // const poolWeight = new BigNumber(allocPoint).div(new BigNumber(totalAllocPoint))
-      }),
-    )
+      return getTotalLPWbnbValue(poolContract, wbnbContract, stakingContract, bestContract, pid)
+      // totalAllocPoint = new BigNumber(totalAllocPoint).plus(new BigNumber(allocPoint))
+      // const poolWeight = new BigNumber(allocPoint).div(new BigNumber(totalAllocPoint))
+    })
+    // let totalAllocPoint = new BigNumber(0)
+    const balances: Array<StakedValue> = await Promise.all(_farms)
 
     setBalance(balances)
   }, [bestAddress, ethereum, farms, wbnbAddress])
