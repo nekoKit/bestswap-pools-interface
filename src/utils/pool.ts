@@ -16,11 +16,11 @@ export const getContract = (provider: provider, address: string) => {
 }
 
 export const getPoolWeight = async (masterChefContract: Contract, pid: string | number) => {
-  const allocPoint = await masterChefContract.methods.totalSupply().call()
-  const totalAllocPoint = await masterChefContract.methods
-    .totalAllocPoint()
-    .call()
-  return new BigNumber(allocPoint).div(new BigNumber(totalAllocPoint))
+  // const allocPoint = await masterChefContract.methods.totalSupply().call()
+  // const totalAllocPoint = await masterChefContract.methods
+  //   .totalAllocPoint()
+  //   .call()
+  return new BigNumber(1)
 }
 
 export const getTotalLPWbnbValue = async (
@@ -58,12 +58,12 @@ export const getTotalLPWbnbValue = async (
     .times(portionLp)
     .div(new BigNumber(10).pow(18))
 
-  const allocPoint = await masterChefContract.methods.totalSupply().call()
+  // const allocPoint = await masterChefContract.methods.totalSupply().call()
   return {
     tokenAmount,
     wethAmount,
     totalWethValue: totalLpWethValue.div(new BigNumber(10).pow(18)),
     tokenPriceInWeth: wethAmount.div(tokenAmount),
-    allocPoint,
+    poolWeight: await getPoolWeight(masterChefContract, pid),
   }
 }

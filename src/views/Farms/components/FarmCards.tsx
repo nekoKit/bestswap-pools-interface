@@ -25,44 +25,40 @@ const FarmCards: React.FC = () => {
   const [farms] = useFarms()
   // const { account } = useWallet()
   const stakedValue = useAllStakedValue()
+  // let totalAllocPoint = new BigNumber(0)
+  // stakedValue.forEach(staked => {
+  //   totalAllocPoint = new BigNumber(totalAllocPoint).plus(new BigNumber(staked.allocPoint))
+  // })
   console.log('FarmCards::useAllStakedValue stakedValue:', stakedValue)
-  let totalAllocPoint = new BigNumber(0)
-  stakedValue.forEach(staked => {
-    totalAllocPoint = new BigNumber(totalAllocPoint).plus(new BigNumber(staked.allocPoint))
-  })
 
-  const newStakedValue = stakedValue.map(item => {
-    const poolWeight = new BigNumber(item.allocPoint).div(new BigNumber(totalAllocPoint))
-    return {
-      poolWeight,
-      ...item,
-    }
-  })
+  // const newStakedValue = stakedValue.map(item => {
+  //   const poolWeight = new BigNumber(1)
+  //   return {
+  //     poolWeight,
+  //     ...item,
+  //   }
+  // })
 
-  const sushiIndex = farms.findIndex(
-    ({ tokenSymbol }) => tokenSymbol === 'SUSHI',
-  )
+  // const sushiIndex = farms.findIndex(
+  //   ({ tokenSymbol }) => tokenSymbol === 'SUSHI',
+  // )
 
-  const sushiPrice =
-    sushiIndex >= 0 && stakedValue[sushiIndex]
-      ? stakedValue[sushiIndex].tokenPriceInWeth
-      : new BigNumber(0)
+  const sushiPrice = new BigNumber(1)
 
   const BLOCKS_PER_YEAR = new BigNumber(2336000)
   const SUSHI_PER_BLOCK = new BigNumber(1000)
 
   const rows = farms.reduce<FarmWithStakedValue[][]>(
     (farmRows, farm, i) => {
-      console.log('FarmCards::farms:reduse stakedValue[i]:', stakedValue[i], 'sushiPrice:', sushiPrice)
       const farmWithStakedValue = {
         ...farm,
-        ...newStakedValue[i],
-        apy: newStakedValue[i]
+        ...stakedValue[i],
+        apy: stakedValue[i]
           ? sushiPrice
               .times(SUSHI_PER_BLOCK)
               .times(BLOCKS_PER_YEAR)
-              .times(newStakedValue[i].poolWeight)
-              .div(newStakedValue[i].totalWethValue)
+              .times(stakedValue[i].poolWeight)
+              .div(stakedValue[i].totalWethValue)
           : null,
       }
       const newFarmRows = [...farmRows]
@@ -182,8 +178,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm }) => {
                     .times(new BigNumber(100))
                     .times(new BigNumber(3))
                     .toNumber()
-                    .toLocaleString('en-US')
-                    .slice(0, -1)}%`
+                    .toLocaleString('en-US')}%`
                     : 'Loading...'}</StyledDetailSpan>
               </StyledDetail>
             </StyledDetails>
