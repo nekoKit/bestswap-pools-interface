@@ -12,12 +12,15 @@ const Nav: React.FC = () => {
         Menu
       </StyledLink>
       <StyledLink exact activeClassName="active" to="/vestnft">
-        VEST NFT
+        Vest NFT
+      </StyledLink>
+      <StyledLink exact activeClassName="active" to="/mynft">
+        My NFT
       </StyledLink>
       <StyledLink exact activeClassName="active" to="/referral">
         Referral
       </StyledLink>
-      <StyledLink exact activeClassName="active" to="/shop">
+      {/* <StyledLink exact activeClassName="active" to="/shop">
         Shop
       </StyledLink>
       <StyledLink exact activeClassName="active" to="/nfts">
@@ -28,7 +31,7 @@ const Nav: React.FC = () => {
         target="_blank"
       >
         About
-      </StyledAbsoluteLink>
+      </StyledAbsoluteLink> */}
     </StyledNav>
   )
 }
@@ -57,23 +60,23 @@ const StyledLink = styled(NavLink)`
   }
 `
 
-const StyledAbsoluteLink = styled.a`
-  color: ${(props) => props.theme.color.yellow};
-  font-weight: normal;
-  padding-left: ${(props) => props.theme.spacing[3]}px;
-  padding-right: ${(props) => props.theme.spacing[3]}px;
-  text-decoration: none;
-  &:hover {
-    color: ${(props) => props.theme.color.yellow};
-  }
-  &.active {
-    color: ${(props) => props.theme.color.yellow};
-    font-weight: bold;
-  }
-  @media (max-width: 400px) {
-    padding-left: ${(props) => props.theme.spacing[2]}px;
-    padding-right: ${(props) => props.theme.spacing[2]}px;
-  }
-`
+// const StyledAbsoluteLink = styled.a`
+//   color: ${(props) => props.theme.color.yellow};
+//   font-weight: normal;
+//   padding-left: ${(props) => props.theme.spacing[3]}px;
+//   padding-right: ${(props) => props.theme.spacing[3]}px;
+//   text-decoration: none;
+//   &:hover {
+//     color: ${(props) => props.theme.color.yellow};
+//   }
+//   &.active {
+//     color: ${(props) => props.theme.color.yellow};
+//     font-weight: bold;
+//   }
+//   @media (max-width: 400px) {
+//     padding-left: ${(props) => props.theme.spacing[2]}px;
+//     padding-right: ${(props) => props.theme.spacing[2]}px;
+//   }
+// `
 
 export default Nav
