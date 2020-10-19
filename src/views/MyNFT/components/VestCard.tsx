@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { NftAssets } from '../../../hooks/nft/useFetchAssets'
+import { lighten } from 'polished'
 import LevelImage from '../../../assets/img/vestnft/vestnft-card-level.png'
+import { VestMetadata } from './types'
+import capitalize from '../../../utils/capitalize'
+import useRefReward from '../../../hooks/useRefReward'
 
 export interface VESTCardProps {
-  info: NftAssets
+  info: VestMetadata & { rewardStatus?: boolean, claimId?: number }
 }
 
 interface StyledCardWrapperProps {
@@ -12,9 +15,11 @@ interface StyledCardWrapperProps {
 }
 
 const VESTCard: React.FC<VESTCardProps> = ({ info }) => {
-  const { image_url, traits, name, background_color } = info
-  const bestCost = traits.find(trait => trait.trait_type === 'Vest Value').value || 0
-  const level = traits.find(trait => trait.trait_type === 'Level').value || '1'
+  const { image, name, attributes, rewardStatus, claimId } = info
+  const bestCost = attributes.find(trait => trait.trait_type === 'Vest Value').value
+  const level = attributes.find(trait => trait.trait_type === 'Level').value.toString()
+  const type = attributes.find(trait => trait.trait_type === 'Type').value.toString()
+  const backgroundColor = attributes.find(trait => trait.trait_type === 'Main Color').value.toString()
   const displayLevel = (level: string): string => {
     const _level = Number(level)
     if (_level === 2) return 'G1'
@@ -35,18 +40,30 @@ const VESTCard: React.FC<VESTCardProps> = ({ info }) => {
     }
   }
 
+  const { onClaimNFT } = useRefReward()
+
   useEffect(() => {
-    loadNFTImage(image_url)
-  }, [image_url])
+    loadNFTImage(image)
+  }, [image])
 
   return (
-    <StyledCardWrapper bgColor={background_color}>
+    <StyledCardWrapper bgColor={backgroundColor}>
+      <StyledTypeText>{capitalize(type)}</StyledTypeText>
       <StyledLevelWrapper>
-        <StyledLevelText>{displayLevel(level.toString())}</StyledLevelText>
+        <StyledLevelText>{displayLevel(level)}</StyledLevelText>
       </StyledLevelWrapper>
       <StyledImage src={imagePath} alt='card-image' />
       <StyledName>{name.toUpperCase()}</StyledName>
       <StyledCost>{bestCost} BEST</StyledCost>
+      {
+        (type === 'referral' && rewardStatus) && (
+          <StyledButton
+            onClick={() => { onClaimNFT(claimId) }}
+          >
+            Receive
+          </StyledButton>
+        )
+      }
     </StyledCardWrapper>
   )
 }
@@ -83,6 +100,16 @@ const StyledLevelText = styled.p`
   text-align: center;
 `
 
+const StyledTypeText = styled.div`
+  color: #000000;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+`
+
 const StyledImage = styled.img`
   display: block;
   margin: 0 auto;
@@ -108,24 +135,25 @@ const StyledCost = styled.div`
   text-align: center;
 `
 
-// const StyledButton = styled.button`
-//   display: block;
-//   width: 146px;
-//   height: 34px;
-//   color: #F5C523;
-//   background-color: #000000;
-//   font-size: 10px;
-//   font-weight: 600;
-//   line-height: 1;
-//   text-align: center;
-//   border-radius: 5px;
-//   margin: 0 auto;
-//   border: 0;
-//   cursor: pointer;
-//   outline: none;
-//   &:hover {
-//     background-color: ${lighten(0.15, '#000000')};
-//   }
-// `
+const StyledButton = styled.button`
+  display: block;
+  width: 146px;
+  height: 34px;
+  color: #F5C523;
+  background-color: #000000;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1;
+  text-align: center;
+  border-radius: 3px;
+  margin: 0 auto;
+  margin-top: 14px;
+  border: 0;
+  cursor: pointer;
+  outline: none;
+  &:hover {
+    background-color: ${lighten(0.15, '#000000')};
+  }
+`
 
 export default VESTCard
