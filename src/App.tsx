@@ -12,6 +12,7 @@ import AcceleratorsProvider from './contexts/Accelerators'
 import useModal from './hooks/useModal'
 import theme from './theme'
 import Farms from './views/Farms'
+import Start from './views/Start'
 import Home from './views/Home'
 // import Stake from './views/Stake'
 import Shop from './views/Shop'
@@ -26,6 +27,9 @@ const App: React.FC = () => {
       <Router>
         <Switch>
           <Route path="/" exact>
+            <Start />
+          </Route>
+          <Route path="/home" exact>
             <Home />
           </Route>
           <Route path="/farms">

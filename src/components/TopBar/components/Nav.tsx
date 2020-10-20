@@ -5,7 +5,7 @@ import styled from 'styled-components'
 const Nav: React.FC = () => {
   return (
     <StyledNav>
-      <StyledLink exact activeClassName="active" to="/">
+      <StyledLink exact activeClassName="active" to="/home">
         Home
       </StyledLink>
       <StyledLink exact activeClassName="active" to="/farms">
