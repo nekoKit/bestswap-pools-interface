@@ -12,7 +12,6 @@ import useReferral from '../../hooks/useReferral'
 import useExplorer from '../../hooks/useExplorer'
 import useClaim from '../../hooks/useClaim'
 import RefABI from '../../constants/abi/Ref.json'
-import PoolABI from '../../constants/abi/Pool.json'
 
 import Claim from './components/Claim'
 import "./index.css"
