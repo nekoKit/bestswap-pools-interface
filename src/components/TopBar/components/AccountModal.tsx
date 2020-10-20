@@ -2,8 +2,8 @@ import React, { useCallback } from 'react'
 import styled from 'styled-components'
 import { useWallet } from 'use-wallet'
 import useTokenBalance from '../../../hooks/useTokenBalance'
-import useSushi from '../../../hooks/useSushi'
-import { getSushiAddress } from '../../../sushi/utils'
+// import useSushi from '../../../hooks/useSushi'
+// import { getSushiAddress } from '../../../sushi/utils'
 import { getBalanceNumber } from '../../../utils/formatBalance'
 import Button from '../../Button'
 import CardIcon from '../../CardIcon'
@@ -16,6 +16,7 @@ import Spacer from '../../Spacer'
 import Value from '../../Value'
 import useExplorer from '../../../hooks/useExplorer'
 import bestImage from '../../../assets/img/best-icon.png'
+import useBest from '../../../hooks/useBest'
 
 const AccountModal: React.FC<ModalProps> = ({ onDismiss }) => {
   const { account, reset } = useWallet()
@@ -25,8 +26,9 @@ const AccountModal: React.FC<ModalProps> = ({ onDismiss }) => {
     reset()
   }, [onDismiss, reset])
 
-  const sushi = useSushi()
-  const sushiBalance = useTokenBalance(getSushiAddress(sushi))
+  // const sushi = useSushi()
+  const best = useBest()
+  const sushiBalance = useTokenBalance(best.address)
 
   return (
     <Modal>

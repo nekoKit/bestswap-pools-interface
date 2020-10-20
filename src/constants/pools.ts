@@ -29,6 +29,6 @@ export const Pools = [
         tokenSymbol: 'BUSD/BNB',
         isWBNB: false,
         icon: 'busd-bnb',
-        magnification: 2,
+        magnification: 3,
     },
 ]
