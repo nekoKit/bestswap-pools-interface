@@ -10,8 +10,10 @@ import web3 from '../../web3/'
 import Page from '../../components/Page'
 import useReferral from '../../hooks/useReferral'
 import useExplorer from '../../hooks/useExplorer'
+import useClaim from '../../hooks/useClaim'
 import RefABI from '../../constants/abi/Ref.json'
 
+import Claim from './components/Claim'
 import "./index.css"
 import theme from '../../theme'
 import { setCookie } from '../../utils/cookie'
@@ -23,6 +25,7 @@ const Referral: React.FC = () => {
   const [ invitedNum, setInvitedNum ] = useState(0)
   const [ rebateNum, setRebateNum ] = useState<BigNumber>(new BigNumber(0))
   const [ rebatePercent ] = useState(0.07)
+  const [ claimed, setClaimed ] = useState<BigNumber>(new BigNumber(0))
   const [ invitedList, setInvitedList ] = useState([])
   const [ rebateScore, setRebateScore ] = useState({})
   const history = useHistory()
@@ -30,6 +33,7 @@ const Referral: React.FC = () => {
   const { account, reset } = useWallet()
   const RefAddress = useReferral()
   const Explorer = useExplorer()
+  const { refRewardContract } = useClaim()
 
   const queryParse = (search = window.location.search) => {
     if (!search) return {}
@@ -97,6 +101,10 @@ const Referral: React.FC = () => {
     else text = window.location.origin + '/referral?l=' + encryptText(account)
     setLink(text)
     if (account) {
+      refRewardContract.methods.claimed(account).call().then((res: any) => {
+        setClaimed(new BigNumber(res * 7 / 100))
+        console.log(claimed)
+      })
       Ref.getPastEvents('ReferrerSet', {
         fromBlock: 0,
         toBlock: 'latest'
@@ -161,8 +169,9 @@ const Referral: React.FC = () => {
           <div className="dashboard-card-col">
             <div className="dashboard-card-col-label">
               <p className="dashboard-card-col-label-value">
-                {getDisplayBalance(rebateNum)}
+                {getDisplayBalance(rebateNum.minus(claimed))}
                 <span>BEST ({Math.round(rebatePercent * 100)}%)</span>
+                <Claim />
               </p>
               <p className="dashboard-card-col-label-title">
                 Rebate

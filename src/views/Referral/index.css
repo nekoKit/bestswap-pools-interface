@@ -14,7 +14,7 @@
     color: white;
 }
 
-.dashboard-title {    
+.dashboard-title {
     margin: 55px 0 0;
     width: auto;
     text-align: center;
@@ -27,7 +27,7 @@
 
 .dashboard-card {
     max-width: 720px;
-    height: 248px;
+    height: 280px;
     margin: 24px auto 0;
     background: #333333;
     border-radius: 32px;
