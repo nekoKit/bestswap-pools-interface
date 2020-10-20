@@ -7,7 +7,10 @@ export const Pools = [
             97: '0xeD24FC36d5Ee211Ea25A80239Fb8C4Cfd80f12Ee',
         },
         acceleratorAddresses: {
-            97: '0x1932E1dF49786a0fC4a8eFcf2641e0c6833DB402',
+            97: '0x9CDB9a89b0d2fD864A4D873D2148A798BFB851c9',
+        },
+        nftTokenAddress: {
+            97: '0x1932E1dF49786a0fC4a8eFcf2641e0c6833DB402'
         },
         name: 'BUSD',
         symbol: 'BUSD',
