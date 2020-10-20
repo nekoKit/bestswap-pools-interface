@@ -1,7 +1,7 @@
 export const Pools = [
     {
         poolAddresses: {
-            97: '0xe43452cd4AB9895E4d16f5ADA24915C6cEEE6cAA',
+            97: '0x4F1439F2F0fcF1B76FD87f1A8376285BeC3824C5',
         },
         stakingTokenAddresses: {
             97: '0xeD24FC36d5Ee211Ea25A80239Fb8C4Cfd80f12Ee',
@@ -32,6 +32,6 @@ export const Pools = [
         tokenSymbol: 'BUSD/BNB',
         isWBNB: false,
         icon: 'busd-bnb',
-        magnification: 2,
+        magnification: 3,
     },
 ]

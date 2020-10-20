@@ -10,8 +10,10 @@ import web3 from '../../web3/'
 import Page from '../../components/Page'
 import useReferral from '../../hooks/useReferral'
 import useExplorer from '../../hooks/useExplorer'
+import useClaim from '../../hooks/useClaim'
 import RefABI from '../../constants/abi/Ref.json'
 
+import Claim from './components/Claim'
 import "./index.css"
 import theme from '../../theme'
 import { setCookie } from '../../utils/cookie'
@@ -30,6 +32,7 @@ const Referral: React.FC = () => {
   const { account, reset } = useWallet()
   const RefAddress = useReferral()
   const Explorer = useExplorer()
+  const { refRewardContract } = useClaim()
 
   const queryParse = (search = window.location.search) => {
     if (!search) return {}
@@ -97,6 +100,9 @@ const Referral: React.FC = () => {
     else text = window.location.origin + '/referral?l=' + encryptText(account)
     setLink(text)
     if (account) {
+      refRewardContract.methods.claimed(account).call().then((res: any) => {
+        console.log(res)
+      })
       Ref.getPastEvents('ReferrerSet', {
         fromBlock: 0,
         toBlock: 'latest'
@@ -163,6 +169,7 @@ const Referral: React.FC = () => {
               <p className="dashboard-card-col-label-value">
                 {getDisplayBalance(rebateNum)}
                 <span>BEST ({Math.round(rebatePercent * 100)}%)</span>
+                <Claim />
               </p>
               <p className="dashboard-card-col-label-title">
                 Rebate
