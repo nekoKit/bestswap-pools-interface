@@ -1,16 +1,20 @@
 export const Pools = [
     {
         poolAddresses: {
-            97: '0xd5F1e70D6f32cD534f2Fd8397649603A00107DB0',
+            97: '0xe43452cd4AB9895E4d16f5ADA24915C6cEEE6cAA',
         },
         stakingTokenAddresses: {
-            97: '0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd',
+            97: '0xeD24FC36d5Ee211Ea25A80239Fb8C4Cfd80f12Ee',
         },
-        name: 'BNB',
-        symbol: 'BNB',
-        tokenSymbol: 'BNB',
-        isWBNB: true,
-        icon: 'bnb',
+        acceleratorAddresses: {
+            97: '0x1932E1dF49786a0fC4a8eFcf2641e0c6833DB402',
+        },
+        name: 'BUSD',
+        symbol: 'BUSD',
+        tokenSymbol: 'BUSD',
+        isWBNB: false,
+        icon: 'busd',
+        nftSymbol: 'TEST',
         magnification: 1,
     },
     {
