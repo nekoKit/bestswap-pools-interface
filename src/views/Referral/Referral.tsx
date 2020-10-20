@@ -25,6 +25,7 @@ const Referral: React.FC = () => {
   const [ invitedNum, setInvitedNum ] = useState(0)
   const [ rebateNum, setRebateNum ] = useState<BigNumber>(new BigNumber(0))
   const [ rebatePercent ] = useState(0.07)
+  const [ claimed, setClaimed ] = useState<BigNumber>(new BigNumber(0))
   const [ invitedList, setInvitedList ] = useState([])
   const [ rebateScore, setRebateScore ] = useState({})
   const history = useHistory()
@@ -101,7 +102,8 @@ const Referral: React.FC = () => {
     setLink(text)
     if (account) {
       refRewardContract.methods.claimed(account).call().then((res: any) => {
-        console.log(res)
+        setClaimed(new BigNumber(res * 7 / 100))
+        console.log(claimed)
       })
       Ref.getPastEvents('ReferrerSet', {
         fromBlock: 0,
@@ -167,7 +169,7 @@ const Referral: React.FC = () => {
           <div className="dashboard-card-col">
             <div className="dashboard-card-col-label">
               <p className="dashboard-card-col-label-value">
-                {getDisplayBalance(rebateNum)}
+                {getDisplayBalance(rebateNum.minus(claimed))}
                 <span>BEST ({Math.round(rebatePercent * 100)}%)</span>
                 <Claim />
               </p>
