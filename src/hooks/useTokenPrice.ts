@@ -4,33 +4,53 @@ import { utils } from "ethers";
 import { useWallet } from "use-wallet";
 import { getSwapRouter } from "../utils/swapRouter";
 import { address } from "../constants/swap";
-import { WBNB } from "../constants/addresses";
+import { ADDRESS_ZERO, WBNB } from "../constants/addresses";
 // import { BigNumber } from "../sushi";
 
-const { BigNumber } = utils
+// const { BigNumber } = utils
 
-export function useTokenPrice(tokenAddress: string) {
+/**
+ * useTokenPriceInBNB 获取1个单位的代币在 Swap 合约中的价格（以BNB计价）
+ * @param tokenAddress Address of ERC20/BEP20 Token
+ * @param decimals Token decimals, optional, default is 18. Needs to fill if decimals is not 18
+ */
+export function useTokenPriceInBNB(tokenAddress: string, decimals: number|string = 18) {
     const { account, ethereum } = useWallet()
-    const [ priceInBNB, updatePriceInBNB ] = useState(new BigNumber(0))
+    // use BigNumber, format them at the display part please
+    const [ priceInBNB, updatePriceInBNB ] = useState("0")
     // 97 stands for bsc testnet
     const networkId = 97
     const contract = useMemo(() => {
         return getSwapRouter(ethereum as provider, address[networkId])
     }, [ethereum])
 
-    const fetchPrice = useCallback(async () => {
-        const [, outputWETH] = await contract.methods.getAmountsOut(utils.parseUnits("1", 18), [
-            tokenAddress, // the token address
-            WBNB[networkId] // WETH
-        ]).call();
-        updatePriceInBNB(outputWETH)
-      }, [contract, tokenAddress])
+    const oneUnitOfToken = utils.parseUnits("1", decimals)
 
-      useEffect(() => {
-        if (account && contract) {
+    const fetchPrice = useCallback(async () => {
+        if (tokenAddress === ADDRESS_ZERO) {
+            // 零号地址，当 BNB 处理，1 BNB = 1 BNB 没毛病
+            updatePriceInBNB(oneUnitOfToken.toString())
+            return
+        }
+        try {
+            const [, outputWBNB] = await contract.methods.getAmountsOut(
+                oneUnitOfToken,
+                [
+                    tokenAddress, // the token address
+                    WBNB[networkId] // WBNB
+                ]).call();
+            updatePriceInBNB(outputWBNB)
+        } catch (error) {
+            console.error('unable to fetch price for: ' + tokenAddress)
+        }
+    }, [contract, tokenAddress, oneUnitOfToken])
+
+
+    useEffect(() => {
+        if (account && contract && decimals !== '0') {
             fetchPrice()
         }
-      }, [contract, account, fetchPrice])
+    }, [contract, account, fetchPrice, decimals])
 
-      return { priceInBNB, fetchPrice }
+    return { priceInBNB, fetchPrice }
 }
