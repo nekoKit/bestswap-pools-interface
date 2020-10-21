@@ -13,7 +13,7 @@ const useNFTBalance = () => {
   const contract = useMemo(() => {
     return getContract(
       ethereum as provider,
-      '0x1932E1dF49786a0fC4a8eFcf2641e0c6833DB402',
+      '0x1850fe94de37C2cA68A1b15AE97948C12238BA0b',
     )
   }, [ethereum])
 
@@ -27,7 +27,7 @@ const useNFTBalance = () => {
 
 
   const fetchApproveState = useCallback( async () => {
-    const approveState = await contract.methods.setApprovalForAll(account, ACC).call()
+    const approveState = await contract.methods.isApprovedForAll(account, ACC).call()
     console.log('useNFTBalance::fetchApproveState approveState:', approveState)
     setApproveState(approveState)
   },
