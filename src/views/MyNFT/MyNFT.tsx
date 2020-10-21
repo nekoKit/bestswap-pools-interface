@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
+import web3 from '../../web3/'
 import { useWallet } from 'use-wallet'
 import Page from '../../components/Page'
 import useRefReward from '../../hooks/useRefReward'
@@ -14,12 +15,15 @@ import useFetchMetadata, {
 import useMyNFT from '../../hooks/useMyNFT'
 import useAcc from '../../hooks/useAcc'
 import VESTCards from './components/VestCards'
+import AcceleratorABI from '../../constants/abi/StakingRewardAccelerator.json'
+import { ACC } from '../../constants/acc'
 
 interface MetadataWithStatus extends VestMetadata {
   rewardStatus: boolean
   tokenId: number
   claimId: number
   balance: number
+  staked: boolean
 }
 
 const switcherList = ['pending', 'received', 'staked']
@@ -41,16 +45,19 @@ const findAssetsByType = (
   rewardStatus: Array<boolean>,
   tokenList: Array<TokenItem>,
   balance: Array<any>,
-  staked: number
+  NFTId: string
 ): Array<MetadataWithStatus> => {
   const metadataWithStatus = metadataList.map((data, i) => {
-    return {
+    let resBody = {
       ...data,
       rewardStatus: rewardStatus[i],
       tokenId: tokenList[i].tokenId,
       claimId: i,
-      balance: Number(balance[i])
+      balance: Number(balance[i]),
+      staked: false
     }
+    if (parseInt(NFTId) === resBody.tokenId) resBody.staked = true
+    return resBody
   })
 
   const pendingRewards = metadataWithStatus.filter(
@@ -59,14 +66,26 @@ const findAssetsByType = (
   const receivedRewards = metadataWithStatus.filter(
     (item) => item.balance > 0,
   )
-  let stakedList: any = []
-  if (staked > 0) {
-    const stakedTokenId = tokenList[staked - 1].tokenId
-    stakedList = metadataWithStatus.filter(
-      (item) => item.tokenId == stakedTokenId,
-    )
+  const stakedRewards = metadataWithStatus.filter(
+    (item) => item.staked == true,
+  )
+
+  let list: Array<MetadataWithStatus> = []
+
+  switch (name) {
+    case "pending":
+      list = pendingRewards
+      break
+    case "received":
+      list = receivedRewards
+      break
+    case "staked":
+      list = stakedRewards
+      break
+    default:
+      list = []
+      break
   }
-  const list = name === 'pending' ? pendingRewards : name === 'received' ? receivedRewards : stakedList
   console.log(
     'MyNFTPage::findAssetsByType metadataWithStatus:',
     metadataWithStatus,
@@ -90,9 +109,12 @@ const MyNFTPage: React.FC = () => {
   const [ tab, setTab ] = useState('pending')
 
   const handleSwitcherChange = useCallback(
-    (name: string) => {
+    async (name: string) => {
       setTab(name)
-      const list = findAssetsByType(name, metadataList, rewardStatus, tokenList, NFTBalance, staked)
+      const accelerator = new web3.eth.Contract(AcceleratorABI as any, ACC)
+      // @ts-ignore
+      const NFTId = await accelerator.methods.getStaked(account).call()
+      const list = findAssetsByType(name, metadataList, rewardStatus, tokenList, NFTBalance, NFTId)
       setSelectedList(list)
     },
     [NFTBalance, metadataList, rewardStatus],
@@ -100,15 +122,19 @@ const MyNFTPage: React.FC = () => {
 
   useEffect(() => {
     if (account) {
-      const initList = findAssetsByType(
-        'pending',
-        metadataList,
-        rewardStatus,
-        tokenList,
-        NFTBalance,
-        staked
-      )
-      setSelectedList(initList)
+      const accelerator = new web3.eth.Contract(AcceleratorABI as any, ACC)
+      // @ts-ignore
+      accelerator.methods.getStaked(account).call().then(res => {
+        const initList = findAssetsByType(
+          'pending',
+          metadataList,
+          rewardStatus,
+          tokenList,
+          NFTBalance,
+          res
+        )
+        setSelectedList(initList)
+      })
     }
   }, [NFTBalance, account, metadataList, rewardStatus])
 
