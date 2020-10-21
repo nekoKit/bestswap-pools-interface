@@ -84,17 +84,17 @@ const VESTCard: React.FC<VESTCardProps> = ({ info, tab }) => {
     if (approveState) {
       btmBtn = (
         <StyledButton
-          onClick={() => { setApprovalForAll() }}
+          onClick={() => { onStake(tokenId) }}
         >
-          Approve
+          Stake
         </StyledButton>
       )
     } else {
       btmBtn = (
         <StyledButton
-          onClick={() => { onStake(tokenId) }}
+          onClick={() => { setApprovalForAll() }}
         >
-          Stake
+          Approve
         </StyledButton>
       )
     }
