@@ -24,6 +24,7 @@ interface MetadataWithStatus extends VestMetadata {
   claimId: number
   balance: number
   staked: boolean
+  acc: number
 }
 
 const switcherList = ['pending', 'received', 'staked']
@@ -54,9 +55,13 @@ const findAssetsByType = (
       tokenId: tokenList[i].tokenId,
       claimId: i,
       balance: Number(balance[i]),
-      staked: false
+      staked: false,
+      acc: 0
     }
     if (parseInt(NFTId) === resBody.tokenId) resBody.staked = true
+    if (resBody.tokenId === 1) resBody.acc = 50
+    if (resBody.tokenId === 2) resBody.acc = 150
+    if (resBody.tokenId === 3) resBody.acc = 300
     return resBody
   })
 

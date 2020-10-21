@@ -12,7 +12,7 @@ import TransactionModal from '../../../components/TransactionModal'
 import { getBscScanLink } from '../../../utils/getBscScanLink'
 
 export interface VESTCardProps {
-  info: VestMetadata & { rewardStatus?: boolean, claimId?: number, tokenId?: number },
+  info: VestMetadata & { rewardStatus?: boolean, claimId?: number, tokenId?: number, acc?: number },
   tab: string
 }
 
@@ -21,8 +21,8 @@ interface StyledCardWrapperProps {
 }
 
 const VESTCard: React.FC<VESTCardProps> = ({ info, tab }) => {
-  const { image, name, attributes, rewardStatus, claimId, tokenId } = info
-  const bestCost = attributes.find(trait => trait.trait_type === 'Vest Value').value
+  const { image, name, attributes, rewardStatus, claimId, tokenId, acc } = info
+  const bestCost = attributes.find(trait  => trait.trait_type === 'Vest Value').value
   const level = attributes.find(trait => trait.trait_type === 'Level').value.toString()
   const type = attributes.find(trait => trait.trait_type === 'Type').value.toString()
   const backgroundColor = attributes.find(trait => trait.trait_type === 'Main Color').value.toString()
@@ -117,6 +117,7 @@ const VESTCard: React.FC<VESTCardProps> = ({ info, tab }) => {
       <StyledImage src={imagePath} alt='card-image' />
       <StyledName>{name.toUpperCase()}</StyledName>
       <StyledCost>{bestCost} BEST {type}</StyledCost>
+      <StyledAcc>Accelerate + {acc} %</StyledAcc>
       {
         btmBtn
       }
@@ -184,6 +185,15 @@ const StyledName = styled.div`
 `
 
 const StyledCost = styled.div`
+  color: #000000;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1;
+  text-align: center;
+`
+
+const StyledAcc = styled.div`
+  margin-top: 5px;
   color: #000000;
   font-size: 10px;
   font-weight: 600;
