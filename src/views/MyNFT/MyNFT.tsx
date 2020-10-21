@@ -61,7 +61,7 @@ const findAssetsByType = (
   )
   let stakedList: any = []
   if (staked > 0) {
-    const stakedTokenId = tokenList[staked].tokenId
+    const stakedTokenId = tokenList[staked - 1].tokenId
     stakedList = metadataWithStatus.filter(
       (item) => item.tokenId == stakedTokenId,
     )
