@@ -1,13 +1,13 @@
 export const Pools = [
     {
         poolAddresses: {
-            97: '0x4F1439F2F0fcF1B76FD87f1A8376285BeC3824C5',
+            97: '0x729a488a4606E44DA2Ef3097049100b20Ff227A1',
         },
         stakingTokenAddresses: {
             97: '0xeD24FC36d5Ee211Ea25A80239Fb8C4Cfd80f12Ee',
         },
         acceleratorAddresses: {
-            97: '0x9CDB9a89b0d2fD864A4D873D2148A798BFB851c9',
+            97: '0x32cD8cB2000988BF522058897626a6D7D6c4ecc1',
         },
         nftTokenAddress: {
             97: '0x1850fe94de37C2cA68A1b15AE97948C12238BA0b'
