@@ -7,7 +7,7 @@ import { ACC } from '../constants/acc'
 export default () => {
     const { account, ethereum } = useWallet()
 
-    const [staked, setStaked] = useState('')
+    const [staked, setStaked] = useState(0)
 
     const contract = useMemo(() => {
         return getContract(ethereum as provider, ACC)
@@ -41,10 +41,10 @@ export default () => {
     const fetchStaked = useCallback(async () => {
         const staked = await contract.methods.getStaked(account).call();
         if (staked === '0') {
-            setStaked('')
+            setStaked(0)
             return
         }
-        setStaked(staked)
+        setStaked(Number(staked))
       }, [account, contract.methods])
     
     useEffect(() => {
