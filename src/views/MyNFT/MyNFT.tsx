@@ -12,6 +12,7 @@ import useFetchMetadata, {
   VestMetadata,
 } from '../../hooks/nft/useFetchMetadata'
 import useMyNFT from '../../hooks/useMyNFT'
+import useAcc from '../../hooks/useAcc'
 import VESTCards from './components/VestCards'
 
 interface MetadataWithStatus extends VestMetadata {
@@ -40,6 +41,7 @@ const findAssetsByType = (
   rewardStatus: Array<boolean>,
   tokenList: Array<TokenItem>,
   balance: Array<any>,
+  staked: number
 ): Array<MetadataWithStatus> => {
   const metadataWithStatus = metadataList.map((data, i) => {
     return {
@@ -57,7 +59,14 @@ const findAssetsByType = (
   const receivedRewards = metadataWithStatus.filter(
     (item) => item.balance > 0,
   )
-  const list = name === 'pending' ? pendingRewards : name === 'received' ? receivedRewards : []
+  let stakedList: any = []
+  if (staked > 0) {
+    const stakedTokenId = tokenList[staked - 1].tokenId
+    stakedList = metadataWithStatus.filter(
+      (item) => item.tokenId == stakedTokenId,
+    )
+  }
+  const list = name === 'pending' ? pendingRewards : name === 'received' ? receivedRewards : stakedList
   console.log(
     'MyNFTPage::findAssetsByType metadataWithStatus:',
     metadataWithStatus,
@@ -73,6 +82,7 @@ const MyNFTPage: React.FC = () => {
   const { rewardStatus } = useRefReward()
   const { metadataList } = useFetchMetadata(tokenList)
   const {NFTBalance} = useMyNFT()
+  const {staked} = useAcc()
 
   const [selectedList, setSelectedList] = useState<Array<MetadataWithStatus>>(
     [],
@@ -82,7 +92,7 @@ const MyNFTPage: React.FC = () => {
   const handleSwitcherChange = useCallback(
     (name: string) => {
       setTab(name)
-      const list = findAssetsByType(name, metadataList, rewardStatus, tokenList, NFTBalance)
+      const list = findAssetsByType(name, metadataList, rewardStatus, tokenList, NFTBalance, staked)
       setSelectedList(list)
     },
     [NFTBalance, metadataList, rewardStatus],
@@ -95,7 +105,8 @@ const MyNFTPage: React.FC = () => {
         metadataList,
         rewardStatus,
         tokenList,
-        NFTBalance
+        NFTBalance,
+        staked
       )
       setSelectedList(initList)
     }
