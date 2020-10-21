@@ -7,7 +7,7 @@ export const Pools = [
             97: '0xeD24FC36d5Ee211Ea25A80239Fb8C4Cfd80f12Ee',
         },
         acceleratorAddresses: {
-            97: '0x32cD8cB2000988BF522058897626a6D7D6c4ecc1',
+            97: '0xcCabAF0CBCDD3bcfA35bCE08F0D3012aFF1C1F15',
         },
         nftTokenAddress: {
             97: '0x1850fe94de37C2cA68A1b15AE97948C12238BA0b'
@@ -17,12 +17,12 @@ export const Pools = [
         tokenSymbol: 'BUSD',
         isWBNB: false,
         icon: 'busd',
-        nftSymbol: 'TEST',
+        nftSymbol: 'VEST',
         magnification: 1,
     },
     {
         poolAddresses: {
-            97: '0x2f67137758b863a67B90d13b89615b6594CDD269',
+            97: '0x65a68e572154EE7266C1c4d990d4BBdDfCF6b7db',
         },
         stakingTokenAddresses: {
             97: '0x917BfF8755793D0f3b9628032Ca01C7fF97BA89e',
