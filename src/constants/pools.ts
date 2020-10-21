@@ -22,10 +22,10 @@ export const Pools = [
     },
     {
         poolAddresses: {
-            97: '0x0c7751431048D276Ae359885c8c4c8c483846d21',
+            97: '0x2f67137758b863a67B90d13b89615b6594CDD269',
         },
         stakingTokenAddresses: {
-            97: '0x2C1E720417dED34cf5ae648de344379E679DFa51',
+            97: '0x917BfF8755793D0f3b9628032Ca01C7fF97BA89e',
         },
         name: 'BUSD/BNB',
         symbol: 'BUSD/BNB',
