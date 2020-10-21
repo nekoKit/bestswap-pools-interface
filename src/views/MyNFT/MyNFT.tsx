@@ -21,7 +21,7 @@ interface MetadataWithStatus extends VestMetadata {
   balance: number
 }
 
-const switcherList = ['pending', 'received']
+const switcherList = ['pending', 'received', 'staked']
 const tokenList: Array<TokenItem> = [
   {
     tokenId: 1,
@@ -57,7 +57,7 @@ const findAssetsByType = (
   const receivedRewards = metadataWithStatus.filter(
     (item) => item.balance > 0,
   )
-  const list = name === 'pending' ? pendingRewards : receivedRewards
+  const list = name === 'pending' ? pendingRewards : name === 'received' ? receivedRewards : []
   console.log(
     'MyNFTPage::findAssetsByType metadataWithStatus:',
     metadataWithStatus,
@@ -72,14 +72,16 @@ const MyNFTPage: React.FC = () => {
   const [onPresentWalletProviderModal] = useModal(<WalletProviderModal />)
   const { rewardStatus } = useRefReward()
   const { metadataList } = useFetchMetadata(tokenList)
-  const [NFTBalance] = useMyNFT()
+  const {NFTBalance} = useMyNFT()
 
   const [selectedList, setSelectedList] = useState<Array<MetadataWithStatus>>(
     [],
   )
+  const [ tab, setTab ] = useState('pending')
 
   const handleSwitcherChange = useCallback(
     (name: string) => {
+      setTab(name)
       const list = findAssetsByType(name, metadataList, rewardStatus, tokenList, NFTBalance)
       setSelectedList(list)
     },
@@ -108,7 +110,7 @@ const MyNFTPage: React.FC = () => {
               switcherList={switcherList}
               onChange={handleSwitcherChange}
             />
-            <VESTCards selectedList={selectedList} />
+            <VESTCards selectedList={selectedList} tab={tab} />
           </StyledContainer>
         ) : (
           <StyledUnlockWrapper>
