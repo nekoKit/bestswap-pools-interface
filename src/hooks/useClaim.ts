@@ -12,12 +12,13 @@ const useClaim = () => {
 
   const handleClaim = useCallback(
     async () => {
-      const call = contract.methods.claim().send({ from: account })
+      const call = await contract.methods.claim().send({ from: account })
       const txHash = call.on('transactionHash', (tx: any) => {
         console.log(tx)
         return tx.transactionHash
       })
       console.log(txHash)
+      window.location.reload()
     },
     [account, contract],
   )
