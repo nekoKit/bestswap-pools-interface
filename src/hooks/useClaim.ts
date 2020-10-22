@@ -6,7 +6,7 @@ import { useWallet } from 'use-wallet'
 
 const useClaim = () => {
   const { account } = useWallet()
-  const refRewardAddress = '0x62d24e413B24098BB8d2C19b64BCEf7aa981C755'
+  const refRewardAddress = '0x00d91F661B87377C0F2F164e41e910175E6359cC'
 
   const contract = new web3.eth.Contract(RefReward as any, refRewardAddress)
 
